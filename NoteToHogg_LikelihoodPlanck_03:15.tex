@@ -1,0 +1,45 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+\usepackage{amsfonts} %allows use of mathbb
+\usepackage{gensymb} %allows use of degree symbol, otherwise use ^{\circ}
+\usepackage{amsmath} %allows use of \text{} command
+
+\begin{document}
+%Header-Make sure you update this information!!!!
+%\noindent
+%\large\textbf{Likelihood} \hfill \textbf{Evan Biederstedt} \\
+%\normalsize Discuss First paper, likelihood, etc. 
+%\hfill \ 12/05/2014 \\
+
+\section*{E-mail note to Hogg, Planck likelihood introduction}
+
+This would be a good beginning note to an introdution, as it summarizes our goals and assumptions.
+ 
+It also details why using Planck map SMICA at $N_{\text{side}}=2048$ is such an admirable goal. We would be responding to the latest Planck paper on the subject. That is, Planck team specifically write the likelihood is "computationally unfeasible for the full Planck resolution at $N_{\text{side}}=2048$. (Planck paper XXIII, page 5). 
+
+http://arxiv.org/pdf/1303.5083v3.pdf
+
+Assuming Gaussianity, the probably density function is given as a multivariate Gaussian function: 
+
+$$
+f(\textbf{T})=\frac{1}{(2\pi)^{N_{\text{pix}/2}}\text{det}\textbf{C}^{1/2}}\exp-\frac{1}{2}(\textbf{T}\textbf{C}^{-1}\textbf{T}^{T})
+$$
+
+
+where $\textbf{T}$ is a vector formed from the measured temperatures $T(\textbf{x})$ over all positions allowed by the applied mask, $N_{\text{pix}}$ is the number of pixels in the vector, and $\textbf{C}$, is the covariance of the Gaussian field (of size $N_{\text{pix}}\times N_{\text{pix}}$). 
+
+Unfortunately, the calculation of $\textbf{T}\textbf{C}^{-1}\textbf{T}^{T}$ is \textbf{computationally unfeasible} for the full Planck resoltuion at HEAPix $N_{\text{side}}=2048$. At a lower resolution, the problem is tractable, and the noise level can also be considered negligible compared to the CMB signal. That implies that \textbf{under the assumption of isotropy}*** the covariance matrix $\textbf{C}$ is fuly defined by the Planck angular power spectrum ($C_l$): 
+
+$$
+C_{ij}=\sum^{l_{\text{max}}}_{l=0}\frac{2l+1}{4\pi}C_l b^2_l P_l(\cos\theta_{ij})
+$$
+
+where $C_{ij}$ is the covariance between pixels $i$ and $j$, and $\theta_{ij}$ is the angle between them, $P_l$ are the Legendre polynomials, $b_l$ is an effective window function association with the $N_{\text{side}}$ resolution, and $l_{\text{max}}$ is the maximum multipole probed.  \\
+
+***What exactly would a violation of the assumption of isotropy, i.e. an anisotropic behavior of ell's do to the covariance matrix $C_{ij}$? This is crucial. 
+
+
+
+\end{document} 
