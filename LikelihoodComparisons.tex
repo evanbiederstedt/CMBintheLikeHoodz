@@ -1,0 +1,172 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+\usepackage{amsfonts} %allows use of mathbb
+\usepackage{gensymb} %allows use of degree symbol, otherwise use ^{\circ}
+\usepackage{amsmath} %allows use of \text{} command
+
+\begin{document}
+%Header
+%\noindent
+%\large\textbf{Likelihood} \hfill \textbf{Evan Biederstedt} \\
+%\normalsize Discuss First paper, likelihood, etc. 
+%\hfill \  \\
+
+{\huge Likelihood Comparisons}
+
+\section*{Covariance Properties}
+
+
+
+Assuming Gaussianity, the probability density function is given as a multivariate Gaussian function
+
+\begin{equation}
+f(\textbf{T}) = \frac{1}{(2\pi)^{N_{\text{pix}/2}} \text{det}\textbf{C}^{1/2}}\exp-\frac{1}{2}(\textbf{T}\textbf{C}^{-1}\textbf{T}^{\text{T}})
+\end{equation}
+
+where $\textbf{T}$ is a vector formed from the measured temperatures $T(\textbf{x})$ over all positions allowed by the applied mask, $\text{N}_{\text{pix}}$ is the number of pixels in the vector, and $\textbf{C}$ is the covariance of the Gaussian field (of size $\text{N}_{\text{pix}}\times\text{N}_{\text{pix}}$). The covariance matrix is defined as $\textbf{C}=\textbf{S}+\textbf{N}$, signal plus noise. 
+
+Assume we have a noiseless, Gaussian map. In spherical harmonic space, we have mean zero and covariance 
+
+\begin{equation}
+\sum a_{lm} a^{\dagger}_{l'm'} = (2l+1)C_l
+\end{equation}
+
+In temperature space (real space), we have mean zero and covariance
+
+\begin{equation}
+S_{ij}=\sum_{l=0}^{l_\text{max}}\frac{2l+1}{4\pi}C^{\text{th}}_l P_l (\cos\alpha_{ij})
+\end{equation}
+
+where $C^{\text{th}}_l$ denotes the theoretical scalar $C_l$ values, $S_{ij}$ is the (noiseless) covariance between pixels $i$ and $j$, and $\alpha_{ij}$ is the angle between them. Legendre polynomials $P_l$ are defined by the Rodrigues formula. For the $n$-th order polynomial of $\mu$, the Legendre polynomial $P_n(\mu)$, this is given as
+
+\begin{equation}
+P_n(x)=\frac{1}{2^n n!} \frac{d^n}{dx^n} \big[ (x^2-1)^n \big]
+\end{equation}
+
+where $P_n(\mu)$ has $n$ zeros in the interval of $-1\geq\mu\geq1$. Legendre polynomials are orthogonal such that 
+
+\begin{equation}
+\int^{1}_{-1}d\mu P_{n}(\mu)P_{n'}(\mu)=\delta_{n n'}\frac{2}{2n+1}
+\end{equation}
+
+and are generated via the recurrence relation
+
+\begin{equation}
+(n+1)P_{n+1}(\mu) = (2n+1)\mu P_{n}(\mu) -n P_{n-1}(\mu)
+\end{equation}
+
+Note that the Legendre polynomials in $C_{ij}$ above is expressed in terms of a sum of products of the spherical harmonics
+
+\begin{equation}
+P_l(\hat{x}\cdot\hat{x}')=\frac{4\pi}{2l+1}\sum^{l}_{m=-l} Y_{lm}(\hat{x})Y^{*}_{lm}(\hat{x}')
+\end{equation}
+
+where we use the fact that spherical harmonic functions are orthogonal, with normalization
+
+\begin{equation}
+\int d\Omega Y^{*}_{lm}(\Omega)Y_{l'm'}(\Omega)=\delta_{ll'}\delta_{mm'}
+\end{equation}
+
+Note for our covariance matrix above in real space, $S_{ij}$: The covariance matrix \textbf{C} of temperature maps is
+
+$$
+C_{ij}=<\Delta T_i\Delta T_j>=\frac{1}{4\pi}\sum^{N_\text{pix}}{p=1}( T^{i}(p)-\bar{T}^{i})( T^{j}(p)-\bar{T}^{j})
+$$
+
+where the temperature maps $\textbf{T}$ are one-dimensional arrays of temperature values of individual pixels, totaling $\text{N}_\text{pix}$.
+
+\par
+
+
+\section*{Likelihood Formalism}
+
+The likelihood for spherical harmonic space is
+
+\begin{equation}
+\mathcal{L}(\textbf{T} \vert C^{\text{th}}_l)\propto \prod_{lm} \frac{\exp\big(-\vert a_{lm}\vert^2/(2C^{\text{th}}_{l}\big)}{\sqrt{C^{\text{th}}_l}}
+\end{equation}
+
+
+Remeber: we are assuming isotropy, so the likelihood is therefore independent of $m$, and we can sum over $m$.This gives 
+
+\begin{equation}
+-2\ln\mathcal{L} = \sum_{l}(2l+1)\Big[\ln\Big(\frac{C^{\text{th}}_l}{\sum_{m}\vert a_{lm}\vert^2/(2l+1)}\Big)+\Big(\frac{\sum_{m}\vert a_{lm}\vert^2/(2l+1)}{C^{\text{th}}_l}\Big)-1 \Big]
+\end{equation}
+
+Using HEALPix's \textbf{anafast}, which uses 
+
+\begin{equation}
+\dot{C}_l=\frac{1}{2l+1}\sum_m \vert\hat{a}_{lm}\vert^2
+\end{equation}
+
+we can then write the likelihood expression above as 
+
+\begin{equation}
+-2\ln\mathcal{L} = \sum_{l}(2l+1)\Big[\ln\Big( \frac{C^{\text{th}}_l}{\hat{C}_l}\Big) +\Big(\hat{C}_l/C^{\text{th}}_l\Big)-1 \Big]
+\end{equation}
+
+with some "irrelevant additive constant". Important note: the likelihood function depends only on the angular power spectrum. Therefore, the angular power spectrum encodes $\textbf{all}$ cosmological information of the CMB.
+
+For temperature space (real space), the likelihood is written as 
+
+\begin{equation}
+\mathcal{L}(\textbf{T}\vert C^{\text{th}}_l)\propto \frac{\exp\big[-(\textbf{T}\textbf{S}^{-1}\textbf{T})/2\big]}{\sqrt{\text{det}\textbf{S}}}
+\end{equation}
+
+where $\textbf{T}$ denotes our temperature map, and $S_{ij}=\sum_l(2l+1)C^{\text{th}}_l P_l(\hat{n}_i\cdot\hat{n}_j)/4\pi$, where $\hat{n}_i$ is the pixel position on the map. Equivalently, we can writen this as
+
+\begin{equation}
+-2 \ln\mathcal{L}\propto\textbf{T}\textbf{S}^{-1}\textbf{T}+\ln\text{det}\textbf{S}+\text{N}\ln2\pi
+\end{equation}
+
+again, within some additive constant. 
+
+In the spherical harmonic basis, we have: 
+\begin{itemize}
+\item[]\textbf{d} is $a_{lm}$
+\item[]\textbf{S} is $\text{diag}(C_2, C_2,\dots C_3, C_3, \dots)$
+\item[]\textbf{N} is $N_{(lm)(lm)'}$
+\end{itemize}
+
+In the pixel basis, we have: 
+
+\begin{itemize}
+\item[]\textbf{d} is $T_i$
+\item[]\textbf{S} is $\sum_{l}\frac{(2l+1)}{4\pi}C^{\text{th}}_l P_l (\cos\alpha_{ij})$
+\item[]\textbf{N} is $\sigma^2_i\delta_{ij}$
+\end{itemize}
+
+In the pixel basis, the noise covariance is *nearly* entirely diagonal. In the spherical harmonic basis, it is rather the signal covaraince which is nearly entirely diagonal. \par
+
+\*section{Explanation of HEALPix anafast facility}
+
+We are using functions provided by HEALPix for this. So, bandlimited functions $f$ on a sphere expanded in spherical harmonics
+
+\begin{equation}
+f(\gamma)=\sum^{l_{\text{max}}}_{l=0}\sum_m a_{lm}Y_{lm}(\gamma)
+\end{equation}
+
+where $\gamma$ denotes a unit vector pointing at polar angle $\theta\in[0,\pi]$ and azimuth $\phi\in[0,2\pi)$. So, pixelizing $f(\gamma)$ means sampling at $\text{N}_\text{pix}$ locations $\gamma_p$ for $p\in[0,\text{N}_\text{pix}-1].$ The sample function values $f_p$ are then used to estimate $a_{lm}$. 
+
+
+\begin{equation}
+\hat{a}_{lm}=\frac{4\pi}{\text{N}_{\text{pix}}}\sum_{p=0}^{\text{N}_\text{pix}-1}Y^{*}_{lm}(\gamma_p)f(\gamma_p)
+\end{equation}
+
+These values are then used to estimate $C_l$
+
+\begin{equation}
+\hat{C}_l=\frac{1}{2l+1}\sum_m\vert\hat{a}_{lm}\vert^2
+\end{equation}
+
+\par
+
+
+See first-year WMAP release. "First Year Wilkinson Microwave Anisotropy Probe (WMAP)
+1 Observations: ParameterEstimation Methodology" L. Verde et al. 
+astro-ph/0302218
+
+
+\end{document} 
