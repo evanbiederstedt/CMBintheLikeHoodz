@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[136]:
+# In[68]:
 
 get_ipython().magic(u'matplotlib inline')
 
@@ -10,7 +10,12 @@ get_ipython().magic(u'matplotlib inline')
 # N_side=4 gives N_pix=192
 
 
-# In[137]:
+# In[ ]:
+
+
+
+
+# In[69]:
 
 import math
 import matplotlib.pyplot as plt 
@@ -21,36 +26,35 @@ import astropy as ap
 import os
 
 np.set_printoptions(threshold='nan')  # Default is threshold=1000
-# Print all is threshold = 'nan'
 ## Use this to print all values, disables corner printing
 
 
-# In[138]:
+# In[70]:
 
 cd ~/downloads
 
 
-# In[139]:
+# In[71]:
 
 file = "camb_cls_nside4.fits" # CAMB C_l scalars
 temp = "camb_nside4.fits" # CAMB simulated maps
 
 
-# In[140]:
+# In[72]:
 
 # open a FITS file 
 # type()=pyfits.hdu.hdulist.HDUList
 ff = pf.open(file)
 
 
-# In[141]:
+# In[73]:
 
 ### Recall there are four columns: temp, E pol, B pol, grad-temp cross terms
 ## first two values are zero, i.e. monopole, dipole
 cls = ff[1].data  # actually second HDU, first is empty
 
 
-# In[142]:
+# In[74]:
 
 # XXX.field() references columns by 0-index
 # field(0) is temperature values
@@ -60,14 +64,14 @@ cls = ff[1].data  # actually second HDU, first is empty
 cltemp = cls.field(0) 
 
 
-# In[143]:
+# In[75]:
 
 # define ell values
 # array from 0 to lmax, the size of map
 ll = np.arange(385)
 
 
-# In[144]:
+# In[76]:
 
 # P_0 is the monopole, P_1 is the dipole
 # remove 0, 1
@@ -75,7 +79,7 @@ ll = np.arange(385)
 ll_nodipoles = np.delete(ll, [0,1]) #numpy.ndarray, [2,3,..,384,385], len()=385 
 
 
-# In[145]:
+# In[77]:
 
 # First calculate the covariance matrix by the definition, i.e. 
 # 
@@ -88,17 +92,17 @@ ll_nodipoles = np.delete(ll, [0,1]) #numpy.ndarray, [2,3,..,384,385], len()=385
 #
 
 
-# In[146]:
+# In[78]:
 
 tempmap = hp.mrdfits("camb_nside4.fits") #type() = list
 
 
-# In[147]:
+# In[79]:
 
 tempdata = tempmap[0] #len()=192, type()=numpy.ndarray
 
 
-# In[148]:
+# In[80]:
 
 # First calculate the mean
 #
@@ -111,27 +115,27 @@ tempdata = tempmap[0] #len()=192, type()=numpy.ndarray
 # Use either mean1 = np.mean(tempdata1) or mean1 = np.average(tempdata1)
 
 
-# In[149]:
+# In[81]:
 
 mean = np.average(tempdata) 
 
 
-# In[150]:
+# In[82]:
 
 Tpi = (tempdata - mean) #type()=numpy.ndarray
 
 
-# In[151]:
+# In[83]:
 
 Tpimatrix = np.matrix(Tpi) #Tpimatrix.shape = (1, 192)
 
 
-# In[152]:
+# In[84]:
 
 transpose = Tpimatrix.T #shape = (192, 1)
 
 
-# In[153]:
+# In[85]:
 
 print "This is the temperature pixel-pixel covariance matrix, equation (1)"
 print "C_{ij} = <\Delta T_i \Delta T_j >"
@@ -144,19 +148,19 @@ print "**************"
 print "**************"
 
 
-# In[154]:
+# In[86]:
 
 ### Begin calculating S_ij piece by piece, in order to do the summation correctly 
 #
 # S_ij = sum(2ell+1) C_l P_l(dotproductmatrix)
 
 
-# In[155]:
+# In[87]:
 
 ell = np.arange(192)
 
 
-# In[156]:
+# In[88]:
 
 ## will give three arrays
 ## arrays of all x values, all y values, all z values
@@ -166,7 +170,7 @@ ell = np.arange(192)
 vecval = hp.pix2vec(4, ell) #Nside = 4, type()=tuple
 
 
-# In[157]:
+# In[89]:
 
 vecvalx = vecval[0] #shape (192,)
 vecvaly = vecval[1]
@@ -174,7 +178,7 @@ vecvalz = vecval[2]
 
 
 
-# In[158]:
+# In[90]:
 
 ## First arrange arrays vertically
 ## numpy.vstack = Stack arrays in sequence vertically (row wise), input sequence of arrays
@@ -182,17 +186,17 @@ vecvalz = vecval[2]
 totalvecval = np.vstack((vecvalx, vecvaly, vecvalz)) #type()=numpy.ndarray
 
 
-# In[159]:
+# In[91]:
 
 trans = totalvecval.T #transpose
 
 
-# In[160]:
+# In[92]:
 
 dotproductmatrix = trans.dot(totalvecval) #take the dot product
 
 
-# In[161]:
+# In[93]:
 
 ## We set C_l scalar TT values to lmax=2Npix
 ## Fix this by simply deleting high C_l values
@@ -203,7 +207,7 @@ dotproductmatrix = trans.dot(totalvecval) #take the dot product
 arr = np.arange(193,384) #numpy.ndarray such that [193,,...383, 384]
 
 
-# In[162]:
+# In[94]:
 
 # We screwed up above. Write lmax = Npix. Remove excess C_l values. 
 
@@ -217,12 +221,12 @@ arr = np.arange(193,384) #numpy.ndarray such that [193,,...383, 384]
 newcls = [ x for i,x in enumerate(cltemp) if i not in arr]
 
 
-# In[163]:
+# In[95]:
 
 from scipy.special import eval_legendre  ##special scipy function
 
 
-# In[164]:
+# In[96]:
 
 ## Begin calculating S_ij piece by piece, in order to do the summation correctly. 
 #
@@ -235,7 +239,7 @@ summatrix = sum( [eval_legendre(i, dotproductmatrix) for i in ell])
 
 
 
-# In[165]:
+# In[97]:
 
 # matrix_total = 
 # (1/(4*math.pi)) * sum((2 * ll + 1) * cltemp ) * eval_legendre(ll, matrix_dotprod)
@@ -245,7 +249,7 @@ summatrix = sum( [eval_legendre(i, dotproductmatrix) for i in ell])
 add_clvalues = sum([ i * summatrix for i in newcls ])
 
 
-# In[166]:
+# In[98]:
 
 # matrix_total = 
 # (1/(4*math.pi)) * np.sum((2*ll + 1) * cltemp ) * eval_legendre(ll, matrix_dotprod)
@@ -254,14 +258,14 @@ wholematrix = sum([((2 * i) + 1) * add_clvalues for i in newcls ])
 
 
 
-# In[167]:
+# In[99]:
 
 
 covmatrix = (1/(4 * math.pi)) * wholematrix #covariance matrix for Nside=4
 
 
 
-# In[168]:
+# In[100]:
 
 print "covmatrix matrix S_ij"
 print "covmatrix.shape = (192, 192), covmatrix2.size = 36864"
@@ -272,7 +276,7 @@ print "**************"
 print "**************"
 
 
-# In[169]:
+# In[101]:
 
 ### We now wish to calculate SUM(2ell+1)C_l
 ### We do this two ways: we first calculate using scalar C_l values
@@ -284,7 +288,7 @@ print "**************"
 ell[0:4]
 
 
-# In[170]:
+# In[102]:
 
 # len(newcls) = 194
 # len(ell) = 192
@@ -301,14 +305,14 @@ newnewcls[0:4]
 #                          2.06575299e-10], dtype=float32)
 
 
-# In[171]:
+# In[103]:
 
 clsvalmatrix = np.matrix(newnewcls) # clsvalmatrix.shape = (1, 192)
 ellmatrix = np.matrix(ell) # ellmatrix.shape = (1,192)
 # ellmatrix.T.shape = (192, 1)
 
 
-# In[172]:
+# In[104]:
 
 ## Begin with C_l scalar values and simply sum
 # spherharmcov = sum([((2 * i) + 1) * newcls for i in ell ])
@@ -317,13 +321,13 @@ ellmatrix = np.matrix(ell) # ellmatrix.shape = (1,192)
 ###    spherharmcov = ((2 * i) + 1) * clsvalmatrix
 
 
-# In[173]:
+# In[105]:
 
 for i in clsvalmatrix: #clsvalmatrix.shape = (1, 192)
     harmcov = ((2*ellmatrix.T + 1)) * i #ellmatrix.T.shape = (192, 1)
 
 
-# In[174]:
+# In[106]:
 
 print "Covariance matrix from generate scalar C_l values"
 print "Summing (2l+1)C_l, beginning with l=0"
@@ -335,7 +339,7 @@ print "**************"
 print "**************"
 
 
-# In[175]:
+# In[107]:
 
 ## Now using CAMB temperature map
 # Generate C_l values from map with anafast
@@ -343,25 +347,25 @@ print "**************"
 ### UNDER CONSTRUCTION
 
 
-# In[176]:
+# In[108]:
 
 ell_193 = np.arange(193)
 
 
-# In[177]:
+# In[109]:
 
 newells = np.delete(ell_193, [0])
 # print newells = [ 1 2 ..... 191 192]
 newellmatrix = np.matrix(newells)
 
 
-# In[178]:
+# In[110]:
 
 for i in clsvalmatrix: #clsvalmatrix.shape = (1, 192)
     harmcovLone = ((2*newellmatrix.T + 1)) * i #ellmatrix.T.shape = (192, 1)
 
 
-# In[179]:
+# In[111]:
 
 print "Covariance matrix from generate scalar C_l values"
 print "Summing (2l+1)C_l, beginning with l=1"
@@ -372,7 +376,7 @@ print "**************"
 print "**************"
 
 
-# In[180]:
+# In[112]:
 
 # We now compute likelihood functions
 #
@@ -381,7 +385,7 @@ print "**************"
 #
 
 
-# In[181]:
+# In[113]:
 
 # map generated from scalar C_l 
 map = hp.synfast(newcls, 4)
@@ -392,13 +396,13 @@ map = hp.synfast(newcls, 4)
 # OUTPUT sky maps
 
 
-# In[182]:
+# In[114]:
 
 powerspectrum = hp.anafast(map) # create powerspectrum \hat{C}_l
 # len(powerspectrum) = 12
 
 
-# In[183]:
+# In[115]:
 
 print "HEALPix anafast \hat(C)_l estimator, len()=12"
 
@@ -408,11 +412,17 @@ print "Difficult to see how to compute spherical harmonic likelihood with CAMB g
 print "Estimator from HEALPix is len()=12, theoretical C_l is 192"
 print "Test with simulated Planck data GOVA"
 
+print "However, we expect rough estimate Sum_ell(2*ell +1)"
+print "Calculate sum( [(2*i + 1) for i in ell])"
+estimatesum = sum( [(2*i + 1) for i in newells])
+print "Rough estimate is:"
+print estimatesum
+
 print "**************"
 print "**************"
 
 
-# In[184]:
+# In[116]:
 
 # Compute temperature space (real space) likelihood
 #
@@ -428,19 +438,19 @@ print "**************"
 # print "−2 ln L \propto T*S^{-1}*T + ln detS + N ln 2\pi"
 
 
-# In[185]:
+# In[117]:
 
 tempvalues = np.matrix(tempdata) #create matrix of temperature values from CAMB map
 # tempvalues.shape = (1, 192)
 
 
-# In[186]:
+# In[118]:
 
 temptranpose = tempvalues.T
 # temptranpose.shape = (192, 1)
 
 
-# In[187]:
+# In[119]:
 
 ## Invert covariance matrix, S_ij
 ## numpy.linalg.inv(a)
@@ -454,7 +464,7 @@ inversematrix = np.matrix(inverse) # S^{-1}
 # inverse.shape = (192, 192)
 
 
-# In[188]:
+# In[120]:
 
 # WARNING: DO NOT USE NP.LIGALG.DET(A)! 
 # Operatioin will not succeed, gives inf or zero
@@ -476,19 +486,19 @@ lnDetS = np.linalg.slogdet(inversematrix) #type()=tuple
 #type(lnDetS[1]) = numpy.float64
 
 
-# In[189]:
+# In[121]:
 
 type(temptranpose)
 
 
-# In[190]:
+# In[122]:
 
 realtemplikehd = ( tempvalues * inversematrix * temptranpose ) 
 realtemplikehdpt2 = ( tempvalues * inversematrix * temptranpose ) + lnDetS[1]
 realtemplikehdpt3 = ( tempvalues * inversematrix * temptranpose ) + ( lnDetS[1] ) + ((192)*2*math.pi)
 
 
-# In[191]:
+# In[123]:
 
 print "Real space (temperature space) likelihood function"
 print "Formalism:  −2 ln L \propto T*S^{-1}*T + ln detS + N ln 2\pi"
@@ -509,7 +519,22 @@ print "**************"
 print "END"
 
 
-# In[ ]:
+# In[124]:
+
+
+
+
+# In[125]:
+
+
+
+
+# In[126]:
+
+
+
+
+# In[127]:
 
 
 
