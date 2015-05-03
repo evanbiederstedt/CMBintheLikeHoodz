@@ -1,0 +1,76 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+\usepackage{amsfonts} %allows use of mathbb
+\usepackage{gensymb} %allows use of degree symbol, otherwise use ^{\circ}
+\usepackage{amsmath} %allows use of \text{} command
+
+\begin{document}
+
+\section*{Nside = 4: Covariance and likelihood. }
+
+\textbf{Data}
+
+We use only CAMB generated scalar $C_l$ values and CAMB generated maps. See Lewis, Challinor, Lasenby: astro-ph/9911177
+
+Maps noiseless, seeded randomly, Gaussian.
+
+If FITS files located in local "Downloads" directory after download/unzipped .tar file, everything works. 
+
+$\text{N}_\text{side}=4$ means $\text{N}_\text{pix}=12\times\text{side}^2=192$ total pixels. 
+
+$C_l$ scalar values were set to $l_\text{max}=2\text{N}_\text{pix}$.
+
+
+\textbf{Covariance results}
+
+The pixel-pixel temperature covariance matrix from CAMB maps is defined as
+
+$$
+C_{ij} = <\Delta T_i \Delta T_j > = \frac{1}{N_{\text{pix}}} \sum^{\text{pix}}_{p=1} (T^i(p)-\bar{T}^i) (T^j(p)-\bar{T}^j)
+$$
+
+
+
+The real-space (temperature space) covariance matrix is defined as 
+
+$$
+C_{ij}=\sum^{l}_{l=0} \frac{2l+1}{4\pi} C^{\text{theor}}_{l}P_{l}(\cos\alpha_{ij})
+$$
+
+where $C_{ij}$ is the covariance between pixel $i$ and pixel $j$,  $C^{\text{theor}}_{l}$ is the theoretical value of $C_l$, $P_{l}$  are the Legendre polynomial, and $\alpha_{ij}$ is the angle between. The dot product is defined by unit vectors, $\cos\alpha_{ij}=\hat{n}_{i}\cdot\hat{n}_{j}$.
+
+In spherical harmonic space, we have mean zero and covariance 
+
+\begin{equation}
+\sum a_{lm} a^{\dagger}_{l'm'} = (2l+1)C_l
+\end{equation}
+
+\textbf{Likelihoods}
+
+Likelihood outputs will not be exact, because of some constants. They are approximate. 
+
+In spherical harmonic space, the expression is 
+
+\begin{equation}
+-2\ln\mathcal{L} = \sum_{l}(2l+1)\Big[\ln\Big( \frac{C^{\text{th}}_l}{\hat{C}_l}\Big) +\Big(\hat{C}_l/C^{\text{th}}_l\Big)-1 \Big]
+\end{equation}
+
+where 
+
+\begin{equation}
+\dot{C}_l=\frac{1}{2l+1}\sum_m \vert\hat{a}_{lm}\vert^2
+\end{equation}
+
+from HEALPix anafast. 
+
+
+In temperature space (real space), the expression is
+
+\begin{equation}
+-2 \ln\mathcal{L}\propto\textbf{T}\textbf{S}^{-1}\textbf{T}+\ln\text{det}\textbf{S}+\text{N}\ln2\pi
+\end{equation}
+
+
+\end{document} 
