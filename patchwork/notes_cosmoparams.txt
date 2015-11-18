@@ -1,0 +1,32 @@
+
+#
+# These are quick notes regarding homogeneity tests with direct LF evaluations using cosmological parameters.
+#
+
+RE: Cosmological parameter space vs. power spectrum C_l space
+We use the power spectrum because (http://arxiv.org/pdf/astro-ph/9808264v2.pdf)
+
+""""
+Although it is possible to produce constraints
+on cosmological parameters directly from the data,
+using the power spectrum as an intermediate step (e.g. Tegmark (1997)) has several advantages.
+The near-degeneracy of some combinations of cosmological
+parameters (e.g., Bond, Efstathiou &
+Tegmark (1997)) implies the surfaces of constant
+likelihood in cosmological parameter space are
+1
+highly elongated, making it difficult for search
+algorithms to navigate (Oh, Spergel & Hinshaw
+1998). The power spectrum space is much simpler
+than the cosmological parameter space since each
+multipole moment (or band of multipole moments)
+is usually only weakly dependent on the others, alleviating
+the search difficulties. Although one still
+has the problem left of estimating nearly degenerate
+cosmological parameters from the resulting
+power spectrum constraints, the likelihood given
+the power spectrum constraints is much easier to
+compute than the likelihood given the map data.
+""""
+
+
