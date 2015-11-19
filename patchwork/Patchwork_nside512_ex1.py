@@ -1185,35 +1185,3 @@ fileObject.close()
 #norm = ((2*ellval + 1))/(4*math.pi)
 #print(norm)
 
-
-# In[ ]
-"""
-# Step 4: multiply 
-#         [5/4pi*P_2(M) + 7/4pi*P_3(M) +...... + 65/4pi*P_32(M)]
-#
-# multiply PlMat by (2*l+1)/4pi, i.e. norm
-norm_matrix = norm[:, None, None] * PlMat
-# [5/4pi * P_2(M)  7/4pi * P_3(M) ....   65/4pi * P_32(M)]
-""""""
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
