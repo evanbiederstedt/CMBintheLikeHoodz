@@ -1,14 +1,10 @@
 
-# coding: utf-8
-
-# In[1]:
-
 from __future__ import (division, print_function, absolute_import)
 
 
 # In[2]:
 
-get_ipython().magic(u'matplotlib inline')
+#get_ipython().magic(u'matplotlib inline')
 import math
 import matplotlib.pyplot as plt 
 import numpy as np
@@ -18,6 +14,8 @@ import astropy as ap
 import os
 from scipy.special import eval_legendre  ##special scipy function
 
+os.getcwd()
+os.chdir('/Users/evanbiederstedt/downloads')
 
 # In[3]:
 
@@ -1193,8 +1191,7 @@ fileObject.close()
 #print(norm)
 
 
-# In[ ]:
-
+# In[ ]
 """
 # Step 4: multiply 
 #         [5/4pi*P_2(M) + 7/4pi*P_3(M) +...... + 65/4pi*P_32(M)]
@@ -1204,28 +1201,6 @@ norm_matrix = norm[:, None, None] * PlMat
 # [5/4pi * P_2(M)  7/4pi * P_3(M) ....   65/4pi * P_32(M)]
 """"""
 
-
-# In[ ]:
-
-"""
-70
- Hubble Constant
-
-2.7255
- Tcmb
-
-0.0226
- Ωbh2
-
-0.112
- Ωch2
-
-0.00064
- Ωνh2
-
-0
- Ωk
-"""
 
 
 # In[ ]:
