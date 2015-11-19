@@ -67,11 +67,6 @@ import scipy
 #
 
 
-# In[9]:
-
-cd ~/Downloads
-
-
 # In[10]:
 
 import scipy.io
